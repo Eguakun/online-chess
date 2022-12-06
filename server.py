@@ -6,7 +6,7 @@ import time
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server = "localhost"
+server = "online-chess-morris.herokuapp.com"
 port = 5555
 
 server_ip = socket.gethostbyname(server)
