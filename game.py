@@ -12,13 +12,13 @@ def install(package):
     subprocess.call([sys.executable, "-m", "pip", "install", package])
 
 try:
-    print("[GAME] Trying to import pygame")
+    print("[GAME] Attempt importing pygame")
     import pygame
 except:
-    print("[EXCEPTION] Pygame not installed")
+    print("[EXCEPTION] Pygame is not installed!")
 
     try:
-        print("[GAME] Trying to install pygame via pip")
+        print("[GAME] Attempt installing pygame via pip")
         import pip
         install("pygame")
         print("[GAME] Pygame has been installed")
@@ -45,7 +45,7 @@ pygame.font.init()
 
 board = pygame.transform.scale(pygame.image.load(os.path.join("img","board_alt.png")), (750, 750))
 chessbg = pygame.image.load(os.path.join("img", "chessbg.png"))
-rect = (113,113,525,525)
+rectangle = (113,113,525,525)
 
 turn = "w"
 
@@ -165,12 +165,12 @@ def click(pos):
     """
     x = pos[0]
     y = pos[1]
-    if rect[0] < x < rect[0] + rect[2]:
-        if rect[1] < y < rect[1] + rect[3]:
-            divX = x - rect[0]
-            divY = y - rect[1]
-            i = int(divX / (rect[2]/8))
-            j = int(divY / (rect[3]/8))
+    if rectangle[0] < x < rectangle[0] + rectangle[2]:
+        if rectangle[1] < y < rectangle[1] + rectangle[3]:
+            divX = x - rectangle[0]
+            divY = y - rectangle[1]
+            i = int(divX / (rectangle[2]/8))
+            j = int(divY / (rectangle[3]/8))
             return i, j
 
     return -1, -1

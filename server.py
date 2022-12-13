@@ -6,7 +6,7 @@ import time
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server = "online-chess-morris.herokuapp.com"
+server = "localhost"
 port = 5555
 
 server_ip = socket.gethostbyname(server)
@@ -24,17 +24,17 @@ connections = 0
 
 games = {0:Board(8, 8)}
 
-spectartor_ids = [] 
+spec_ids = [] 
 specs = 0
 
 def read_specs():
-    global spectartor_ids
+    global spec_ids
 
-    spectartor_ids = []
+    spec_ids = []
     try:
         with open("specs.txt", "r") as f:
             for line in f:
-                spectartor_ids.append(line.strip())
+                spec_ids.append(line.strip())
     except:
         print("[ERROR] No specs.txt file found, creating one...")
         open("specs.txt", "w")
@@ -124,16 +124,16 @@ def threaded_client(conn, game, spec=False):
         conn.close()
 
     else:
-        available_games = list(games.keys())
+        games_open_for_play = list(games.keys())
         game_ind = 0
-        bo = games[available_games[game_ind]]
+        bo = games[games_open_for_play[game_ind]]
         bo.start_user = "s"
         data_string = pickle.dumps(bo)
         conn.send(data_string)
 
         while True:
-            available_games = list(games.keys())
-            bo = games[available_games[game_ind]]
+            games_open_for_play = list(games.keys())
+            bo = games[games_open_for_play[game_ind]]
             try:
                 d = conn.recv(128)
                 data = d.decode("utf-8")
@@ -144,15 +144,15 @@ def threaded_client(conn, game, spec=False):
                         if data == "forward":
                             print("[SPECTATOR] Moved Games forward")
                             game_ind += 1
-                            if game_ind >= len(available_games):
+                            if game_ind >= len(games_open_for_play):
                                 game_ind = 0
                         elif data == "back":
                             print("[SPECTATOR] Moved Games back")
                             game_ind -= 1
                             if game_ind < 0:
-                                game_ind = len(available_games) -1
+                                game_ind = len(games_open_for_play) -1
 
-                        bo = games[available_games[game_ind]]
+                        bo = games[games_open_for_play[game_ind]]
                     except:
                         print("[ERROR] Invalid Game Recieved from Spectator")
 
@@ -187,7 +187,7 @@ while True:
                 g = 0
                 games[g] = Board(8,8)
 
-        '''if addr[0] in spectartor_ids and specs == 0:
+        '''if addr[0] in spec_ids and specs == 0:
             spec = True
             print("[SPECTATOR DATA] Games to view: ")
             print("[SPECTATOR DATA]", games.keys())
